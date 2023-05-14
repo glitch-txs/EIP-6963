@@ -32,21 +32,20 @@ const EIP6963 = () => {
   const [selectedWallet, setSelectedWallet] = useState<EIP6963AnnouncedProvider>()
   const [userAccount, setUserAccount] = useState<string>('')
 
-  useEffect(()=>{
-    function onPageLoad() {
-      window.addEventListener(
-        "message",
-        (event: MessageEvent) => {
-          if (event.data.eventName === "eip6963:announceProvider") {
-            const newProviderUUID = event.data.announcedProvider.info.uuid
-            setAnnouncedProvider(p => [...p.filter(p => p.info.uuid !== newProviderUUID), event.data.announcedProvider])
-          }
-        }
-      );
-      window.postMessage({ eventName: "eip6963:requestProvider" });
+  function onAnnouncement (){
+    (event: MessageEvent) => {
+      if (event.data.eventName === "eip6963:announceProvider") {
+        const newProviderUUID = event.data.announcedProvider.info.uuid
+        setAnnouncedProvider(p => [...p.filter(p => p.info.uuid !== newProviderUUID), event.data.announcedProvider])
+      }
     }
+  }
 
-    onPageLoad()
+  useEffect(()=>{
+    window.addEventListener("message", onAnnouncement);
+    window.postMessage({ eventName: "eip6963:requestProvider" });
+    
+    return ()=> window.removeEventListener("message", onAnnouncement)
   },[])
 
   const handleConnect = async(providerWithInfo: EIP6963AnnouncedProvider)=> {
