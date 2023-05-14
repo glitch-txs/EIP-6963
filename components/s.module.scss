@@ -1,0 +1,55 @@
+.section{
+  height: fit-content;
+  max-height: 700px;
+  max-width: 400px;
+  width: 100%;
+  background-color: #2b2b2b;
+  border-radius: 8px;
+  border: 1px solid #bc0000;
+  overflow-y: auto;
+}
+
+.container{
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+.wallet{
+  width: 100%;
+  height: fit-content;
+  min-height: 60px;
+  padding: 5px;
+  background-color: #404040;
+  border: 1px solid rgb(255, 255, 255,0.1);
+  border-radius: 4px;
+  color: #fff;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+
+  &:hover{
+    background-color: #303030;
+  }
+  
+  span{
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  p{
+    font-size: 13px;
+  }
+}
