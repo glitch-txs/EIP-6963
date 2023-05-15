@@ -3,9 +3,8 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
 import s from './s.module.scss'
 import useMock from '../hooks/useMock';
-import { type } from 'os';
 
-interface EIP6963AnnouncedProvider {
+interface EIP6963ProviderDetail {
   info: EIP6963ProviderInfo;
   provider: EIP1193Provider;
 }
@@ -29,14 +28,14 @@ interface EIP1193Provider {
 
 type EIP6963AnnounceProviderEvent = {
   data:{
-    announcedProvider: EIP6963AnnouncedProvider
+    announcedProvider: EIP6963ProviderDetail
   }
 } & EventListener
 
 const EIP6963 = () => {
 
-  const [announcedProvider, setAnnouncedProvider] = useState<EIP6963AnnouncedProvider[]>([])
-  const [selectedWallet, setSelectedWallet] = useState<EIP6963AnnouncedProvider>()
+  const [announcedProvider, setAnnouncedProvider] = useState<EIP6963ProviderDetail[]>([])
+  const [selectedWallet, setSelectedWallet] = useState<EIP6963ProviderDetail>()
   const [userAccount, setUserAccount] = useState<string>('')
 
   function onAnnouncement (){
@@ -53,7 +52,7 @@ const EIP6963 = () => {
     return ()=> window.removeEventListener("eip6963:announceProvider", onAnnouncement)
   },[])
 
-  const handleConnect = async(providerWithInfo: EIP6963AnnouncedProvider)=> {
+  const handleConnect = async(providerWithInfo: EIP6963ProviderDetail)=> {
     const accounts = await providerWithInfo.provider.request({method:'eth_requestAccounts'}).catch(console.error)
     if(accounts?.[0]){
       setSelectedWallet(providerWithInfo)

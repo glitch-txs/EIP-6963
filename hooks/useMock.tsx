@@ -6,7 +6,7 @@ declare global{
   }
 }
 
-interface EIP6963AnnouncedProvider {
+interface EIP6963ProviderDetail {
   info: EIP6963ProviderInfo;
   provider: EIP1193Provider;
 }
@@ -32,7 +32,7 @@ const base64 = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz
 
 const useMock = () => {
 
-  const [testProviders, setTestProviders] = useState<EIP6963AnnouncedProvider[]>([])
+  const [testProviders, setTestProviders] = useState<EIP6963ProviderDetail[]>([])
 
   useEffect(()=>{
     if(!window?.ethereum) return
