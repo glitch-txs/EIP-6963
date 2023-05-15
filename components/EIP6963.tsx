@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
 import s from './s.module.scss'
 import useMock from '../hooks/useMock';
+import { type } from 'os';
 
 interface EIP6963AnnouncedProvider {
   info: EIP6963ProviderInfo;
@@ -26,6 +27,12 @@ interface EIP1193Provider {
   request: (request: { method: string, params?: Array<any> }) => Promise<any>
 }
 
+type EIP6963AnnounceProviderEvent = {
+  data:{
+    announcedProvider: EIP6963AnnouncedProvider
+  }
+} & EventListener
+
 const EIP6963 = () => {
 
   const [announcedProvider, setAnnouncedProvider] = useState<EIP6963AnnouncedProvider[]>([])
@@ -33,19 +40,17 @@ const EIP6963 = () => {
   const [userAccount, setUserAccount] = useState<string>('')
 
   function onAnnouncement (){
-    (event: MessageEvent) => {
-      if (event.data.eventName === "eip6963:announceProvider") {
-        const newProviderUUID = event.data.announcedProvider.info.uuid
-        setAnnouncedProvider(p => [...p.filter(p => p.info.uuid !== newProviderUUID), event.data.announcedProvider])
-      }
+    (event: EIP6963AnnounceProviderEvent) => {
+      const newProviderUUID = event.data.announcedProvider.info.uuid
+      setAnnouncedProvider(p => [...p.filter(p => p.info.uuid !== newProviderUUID), event.data.announcedProvider])
     }
   }
 
   useEffect(()=>{
-    window.addEventListener("message", onAnnouncement);
-    window.postMessage({ eventName: "eip6963:requestProvider" });
+    window.addEventListener("eip6963:announceProvider", onAnnouncement);
+    window.dispatchEvent(new Event("eip6963:requestProvider"));
     
-    return ()=> window.removeEventListener("message", onAnnouncement)
+    return ()=> window.removeEventListener("eip6963:announceProvider", onAnnouncement)
   },[])
 
   const handleConnect = async(providerWithInfo: EIP6963AnnouncedProvider)=> {
