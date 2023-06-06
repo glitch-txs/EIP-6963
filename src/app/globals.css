@@ -6,12 +6,12 @@
 
 *::selection{
   background-color: #bc0000;
-  color: #202020;
+  color: #101010;
 }
 
 body {
   color: #fff;
-  background: #202020;
+  background: #101010;
   text-align: center;
 }
 

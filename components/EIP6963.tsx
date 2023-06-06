@@ -27,10 +27,17 @@ interface EIP1193Provider {
 }
 
 type EIP6963AnnounceProviderEvent = {
-  data:{
-    announcedProvider: EIP6963ProviderDetail
+  detail:{
+    info: EIP6963ProviderInfo,
+    provider: EIP1193Provider
   }
-} & EventListener
+}
+
+declare global{
+  interface WindowEventMap {
+    "eip6963:announceProvider": CustomEvent
+  }
+}
 
 const EIP6963 = () => {
 
@@ -38,13 +45,12 @@ const EIP6963 = () => {
   const [selectedWallet, setSelectedWallet] = useState<EIP6963ProviderDetail>()
   const [userAccount, setUserAccount] = useState<string>('')
 
-  function onAnnouncement (){
-    (event: EIP6963AnnounceProviderEvent) => {
-      const newProviderUUID = event.data.announcedProvider.info.uuid
-      setAnnouncedProvider(p => [...p.filter(p => p.info.uuid !== newProviderUUID), event.data.announcedProvider])
-    }
+  function onAnnouncement (event: EIP6963AnnounceProviderEvent){
+    const newProviderUUID = event.detail.info.uuid
+    setAnnouncedProvider(p => [...p.filter(p => p.info.uuid !== newProviderUUID), event.detail])
   }
 
+  console.log(announcedProvider)
   useEffect(()=>{
     window.addEventListener("eip6963:announceProvider", onAnnouncement);
     window.dispatchEvent(new Event("eip6963:requestProvider"));
@@ -63,11 +69,11 @@ const EIP6963 = () => {
   // const { testProviders } = useMock()
 
   return (
-    <div style={{display: 'flex', flexDirection:'column', gap:'14px'}}>
+    <div style={{display: 'flex', flexDirection:'column', gap:'14px', justifyContent: 'center', alignItems:'center'}}>
       <section className={s.section} >
       <div className={s.container} >
         {
-          announcedProvider.length > 1 ? announcedProvider?.map((v)=>(
+          announcedProvider.length > 0 ? announcedProvider?.map((v)=>(
           <div key={v.info.uuid} className={s.wallet} onClick={()=>handleConnect(v)} >
             <span>{v.info.icon && <Image src={v.info.icon} width={30} height={30} alt=''/>} {v.info.name}</span>
           </div>
